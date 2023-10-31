@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Edit player{% endblock %}
+{% block content %}
+    <h1 class="title">Edit Player</h1>
+
+    <form action="" method="post" name="player_edit">
+      <div class="field">
+        <label for="name" class="name">Name</label>
+        <div class="control">
+          <input type="text" name="title" class="input" required="required"
+                 value="{{ values['name'] }}"/>
+        </div>
+        {% if 'name' in values.errors %}
+        <p class="help has-background-warning">
+            {{ values.errors['title'] }}
+        </p>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="age" class="label">Age</label>
+        <div class="control">
+          <input type="number" name="year" class="input"
+                 min="{{ min_year }}" max="{{ max_year }}"
+                 value="{{ values['year'] }}"/>
+        </div>
+        {% if 'year' in values.errors %}
+        <p class="help has-background-warning">
+            {{ values.errors['year'] }}
+        </p>
+        {% endif %}
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary is-small">Save</button>
+        </div>
+      </div>
+    </form>
+{% endblock %}

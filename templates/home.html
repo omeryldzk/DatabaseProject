@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <h1>My Players collection</h1>
+    <p>Have a nice {{ day }}!</p>
+
+    <ul>
+      <li><a href="{{ url_for('players_page') }}">List Players</a></li>
+    </ul>
+{% endblock %}
