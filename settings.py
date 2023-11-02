@@ -1,5 +1,5 @@
 DEBUG = False
-PORT = 8080
+PORT = 8090
 SECRET_KEY = "secret"
 WTF_CSRF_ENABLED = True
 

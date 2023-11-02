@@ -28,11 +28,7 @@ def player_page(player_key):
     return render_template("player.html", player=player)
 def player_add_page():
     if request.method == "GET":
-        db = current_app.config["db"]
-        player = db.get_player(player_key)
-        if player is None:
-            abort(404)
-        values = {"name": player.name, "age": player.age}
+        values = {"name": "", "age": ""}
         return render_template(
             "player_edit.html",
             min_year=18,
