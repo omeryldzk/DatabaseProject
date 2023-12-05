@@ -3,7 +3,7 @@ from flask_login import LoginManager
 import views
 from database import Database
 from models.user import get_user
-from models.player import Player
+from models.players import Player
 
 lm = LoginManager()
 
