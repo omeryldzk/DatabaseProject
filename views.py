@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import current_app, render_template, redirect, request, url_for,flash,abort
-from models.player import Player
+from models.players import Player
 from passlib.hash import pbkdf2_sha256 as hasher
 from forms import LoginForm 
 from models.user import get_user

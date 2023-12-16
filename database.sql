@@ -1,34 +1,4 @@
--- Table: appearance
-CREATE TABLE appearance (
-    appearance_id INT PRIMARY KEY,
-    game_id INT REFERENCES games(game_id),
-    player_id INT REFERENCES players(player_id),
-    player_club_id INT,
-    player_current_club_id INT,
-    date DATE,
-    player_name VARCHAR(255),
-    competition_id INT,
-    yellow_cards INT,
-    red_cards INT,
-    goals INT,
-    assists INT,
-    minutes_played INT
-);
 
--- Table: club_games
-CREATE TABLE club_games (
-    game_id INT REFERENCES games(game_id),
-    club_id INT REFERENCES clubs(club_id),
-    own_goals INT,
-    own_position INT,
-    own_manager_name VARCHAR(255),
-    opponent_id INT,
-    opponent_goals INT,
-    opponent_position INT,
-    opponent_manager_name VARCHAR(255),
-    hosting BOOLEAN,
-    is_win BOOLEAN
-);
 
 -- Table: competitions
 CREATE TABLE competitions (
@@ -69,20 +39,6 @@ CREATE TABLE games (
     away_club_name VARCHAR(255),
     aggregate BOOLEAN,
     competition_type VARCHAR(50)
-);
-
--- Table: game_events
-CREATE TABLE game_events (
-    game_event_id INT PRIMARY KEY,
-    date DATE,
-    game_id INT REFERENCES games(game_id),
-    minute INT,
-    type VARCHAR(50),
-    club_id INT REFERENCES clubs(club_id),
-    player_id INT REFERENCES players(player_id),
-    description VARCHAR(255),
-    player_in_id INT REFERENCES players(player_id),
-    player_assist_id INT REFERENCES players(player_id)
 );
 
 -- Table: game_lineups
