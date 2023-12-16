@@ -54,19 +54,6 @@ CREATE TABLE game_lineups (
     position VARCHAR(50)
 );
 
--- Table: player_valuations
-CREATE TABLE player_valuations (
-    player_id INT PRIMARY KEY REFERENCES players(player_id),
-    last_season VARCHAR(10),
-    datetime DATETIME,
-    date DATE,
-    dateweek INT,
-    market_value_in_eur DECIMAL(15, 2),
-    n INT,
-    current_club_id INT REFERENCES clubs(club_id),
-    player_club_domestic_competition_id INT
-);
-
 -- Table: players
 CREATE TABLE players (
     player_id INT PRIMARY KEY,
