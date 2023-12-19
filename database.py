@@ -323,6 +323,52 @@ def get_player(self, player_id):
         current_club_name
     )
     return player
+
+def get_players(self):
+    players = []
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    player_id,
+                    first_name,
+                    last_name,
+                    name,
+                    last_season,
+                    current_club_id,
+                    player_code,
+                    country_of_birth,
+                    city_of_birth,
+                    country_of_citizenship,
+                    date_of_birth,
+                    sub_position,
+                    position,
+                    foot,
+                    height_in_cm,
+                    market_value_in_eur,
+                    highest_market_value_in_eur,
+                    contract_expiration_date,
+                    agent_name,
+                    image_url,
+                    url,
+                    current_club_domestic_competition_id,
+                    current_club_name
+                FROM
+                    players
+            """
+            cursor.execute(query)
+            for player_id, first_name, last_name, name, last_season, current_club_id, player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position, position, foot, height_in_cm, market_value_in_eur, highest_market_value_in_eur, contract_expiration_date, agent_name, image_url, url, current_club_domestic_competition_id, current_club_name in cursor:
+                players.append((Players(player_id, first_name, last_name, name, last_season, current_club_id, player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position, position, foot, height_in_cm,market_value_in_eur, highest_market_value_in_eur, contract_expiration_date, agent_name, image_url, url, current_club_domestic_competition_id, current_club_name)))
+    return players
+
+def delete_player(self, player_id):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM players WHERE (player_id = %s)
+            """
+            cursor.execute(query, (player_id,))
+
 def get_club(self, club_id):
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
@@ -388,3 +434,41 @@ def get_club(self, club_id):
         url
     )
     return club
+
+def get_clubs(self):
+    clubs = []
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    club_id,
+                    club_code,
+                    name,
+                    domestic_competition_id,
+                    total_market_value,
+                    squad_size,
+                    average_age,
+                    foreigners_number,
+                    foreigners_percentage,
+                    national_team_players,
+                    stadium_name,
+                    stadium_seats,
+                    net_transfer_record,
+                    coach_name,
+                    last_season,
+                    url
+                FROM
+                    clubs
+            """
+            cursor.execute(query)
+            for club_id, club_code, name, domestic_competition_id,total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage,national_team_players, stadium_name,stadium_seats,net_transfer_record, coach_name, last_season, url in cursor:
+                clubs.append((club_id, Club(club_id, club_code, name, domestic_competition_id, total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats, net_transfer_record, coach_name, last_season, url)))
+    return clubs
+
+def delete_club(self, club_id):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM clubs WHERE (club_id = %s)
+            """
+            cursor.execute(query, (club_id,))
