@@ -5,7 +5,7 @@ class Competitions:
         self.name = name
         self.sub_type = sub_type
         self.type = type
-        self.country_id = country_id
+        self.country_id = country_id  #Silinmeli?
         self.country_name = country_name
         self.domestic_league_code = domestic_league_code
         self.confederation = confederation

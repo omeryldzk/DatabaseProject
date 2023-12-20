@@ -21,5 +21,5 @@ class Players:
         self.agent_name = agent_name
         self.image_url = image_url
         self.url = url
-        self.current_club_domestic_competition_id = current_club_domestic_competition_id
-        self.current_club_name = current_club_name
+        self.current_club_domestic_competition_id = current_club_domestic_competition_id  #Silinmeli?
+        self.current_club_name = current_club_name  #Silinmeli?

@@ -4,9 +4,9 @@ class Appearance:
         self.game_id = game_id
         self.player_id = player_id
         self.player_club_id = player_club_id
-        self.player_current_club_id = player_current_club_id
-        self.date = date
-        self.player_name = player_name
+        self.player_current_club_id = player_current_club_id  #Silinmeli?
+        self.date = date  #Silinmeli?
+        self.player_name = player_name  #Silinmeli?
         self.competition_id = competition_id
         self.yellow_cards = yellow_cards
         self.red_cards = red_cards

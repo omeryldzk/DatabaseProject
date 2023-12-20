@@ -8,4 +8,4 @@ class PlayerValuations:
         self.market_value_in_eur = market_value_in_eur
         self.n = n
         self.current_club_id = current_club_id
-        self.player_club_domestic_competition_id = player_club_domestic_competition_id
+        self.player_club_domestic_competition_id = player_club_domestic_competition_id  #Silinmeli?
