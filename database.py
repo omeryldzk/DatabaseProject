@@ -324,7 +324,7 @@ def get_player(self, player_id):
     )
     return player
 
-def get_players(self):
+def get_players_of_club(self,club_id):
     players = []
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
@@ -355,11 +355,20 @@ def get_players(self):
                     current_club_name
                 FROM
                     players
+                WHERE current_club_id = %s;
             """
-            cursor.execute(query)
+            cursor.execute(query,(club_id,))
             for player_id, first_name, last_name, name, last_season, current_club_id, player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position, position, foot, height_in_cm, market_value_in_eur, highest_market_value_in_eur, contract_expiration_date, agent_name, image_url, url, current_club_domestic_competition_id, current_club_name in cursor:
                 players.append((Players(player_id, first_name, last_name, name, last_season, current_club_id, player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position, position, foot, height_in_cm,market_value_in_eur, highest_market_value_in_eur, contract_expiration_date, agent_name, image_url, url, current_club_domestic_competition_id, current_club_name)))
     return players
+
+def add_player(self, player):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = "INSERT INTO players (first_name, last_name) VALUES (%s, %s)"
+            cursor.execute(query, (player.first_name, player.last_name))
+            player_key = cursor.lastrowid
+    return player_key
 
 def delete_player(self, player_id):
     with dbapi2.connect(self.db_url) as connection:
@@ -435,7 +444,7 @@ def get_club(self, club_id):
     )
     return club
 
-def get_clubs(self):
+def get_clubs_of_competition(self,competition_id):
     clubs = []
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
@@ -459,12 +468,21 @@ def get_clubs(self):
                     url
                 FROM
                     clubs
+                WHERE domestic_competition_id = %s;
             """
-            cursor.execute(query)
+            cursor.execute(query, (competition_id,))
             for club_id, club_code, name, domestic_competition_id,total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage,national_team_players, stadium_name,stadium_seats,net_transfer_record, coach_name, last_season, url in cursor:
                 clubs.append((club_id, Club(club_id, club_code, name, domestic_competition_id, total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats, net_transfer_record, coach_name, last_season, url)))
     return clubs
 
+def add_club(self, club_in):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """INSERT INTO clubs (club_id, club_code, name, domestic_competition_id)
+             VALUES (%s, %s, %s, %s) RETURNING club_id"""
+            cursor.execute(query, (club_in.club_id, club_in.club_code, club_in.name, club_in.domestic_competition_id))
+            club_key = cursor.fetchone()[0]
+    return club_key
 def delete_club(self, club_id):
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
