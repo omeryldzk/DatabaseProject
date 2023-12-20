@@ -7,7 +7,7 @@ CREATE TABLE competitions (
     name VARCHAR(255),
     sub_type VARCHAR(50),
     type VARCHAR(50),
-    country_id INT,
+    country_id INT,--Silinmeli?
     country_name VARCHAR(255),
     domestic_league_code VARCHAR(10),
     confederation VARCHAR(50),
@@ -27,18 +27,18 @@ CREATE TABLE games (
     away_club_goals INT,
     home_club_position INT,
     away_club_position INT,
-    home_club_manager_name VARCHAR(255),
-    away_club_manager_name VARCHAR(255),
+    home_club_manager_name VARCHAR(255),--Silinmeli?
+    away_club_manager_name VARCHAR(255),--Silinmeli?
     stadium VARCHAR(255),
     attendance INT,
     referee VARCHAR(255),
     url VARCHAR(255),
     home_club_formation VARCHAR(50),
     away_club_formation VARCHAR(50),
-    home_club_name VARCHAR(255),
-    away_club_name VARCHAR(255),
+    home_club_name VARCHAR(255),--Silinmeli?
+    away_club_name VARCHAR(255),--Silinmeli?
     aggregate BOOLEAN,
-    competition_type VARCHAR(50)
+    competition_type VARCHAR(50)--Silinmeli?
 );
 
 -- Table: game_lineups
@@ -49,7 +49,7 @@ CREATE TABLE game_lineups (
     type VARCHAR(50),
     number INT,
     player_id INT REFERENCES players(player_id),
-    player_name VARCHAR(255),
+    player_name VARCHAR(255),--Silinmeli?
     team_captain BOOLEAN,
     position VARCHAR(50)
 );
@@ -77,8 +77,8 @@ CREATE TABLE players (
     agent_name VARCHAR(255),
     image_url VARCHAR(255),
     url VARCHAR(255),
-    current_club_domestic_competition_id INT REFERENCES competitions(competition_id),
-    current_club_name VARCHAR(255)
+    current_club_domestic_competition_id INT REFERENCES competitions(competition_id),--Silinmeli?
+    current_club_name VARCHAR(255)--Silinmeli?
 );
 -- Table: clubs
 CREATE TABLE clubs (
