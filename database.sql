@@ -7,7 +7,6 @@ CREATE TABLE competitions (
     name VARCHAR(255),
     sub_type VARCHAR(50),
     type VARCHAR(50),
-    country_id INT,--Silinmeli?
     country_name VARCHAR(255),
     domestic_league_code VARCHAR(10),
     confederation VARCHAR(50),
@@ -27,18 +26,13 @@ CREATE TABLE games (
     away_club_goals INT,
     home_club_position INT,
     away_club_position INT,
-    home_club_manager_name VARCHAR(255),--Silinmeli?
-    away_club_manager_name VARCHAR(255),--Silinmeli?
     stadium VARCHAR(255),
     attendance INT,
     referee VARCHAR(255),
     url VARCHAR(255),
     home_club_formation VARCHAR(50),
     away_club_formation VARCHAR(50),
-    home_club_name VARCHAR(255),--Silinmeli?
-    away_club_name VARCHAR(255),--Silinmeli?
     aggregate BOOLEAN,
-    competition_type VARCHAR(50)--Silinmeli?
 );
 
 -- Table: game_lineups
@@ -49,7 +43,6 @@ CREATE TABLE game_lineups (
     type VARCHAR(50),
     number INT,
     player_id INT REFERENCES players(player_id),
-    player_name VARCHAR(255),--Silinmeli?
     team_captain BOOLEAN,
     position VARCHAR(50)
 );
@@ -59,30 +52,20 @@ CREATE TABLE player (
     player_id INT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    name VARCHAR(255),
-<<<<<<< HEAD
     last_season VARCHAR(10),
     current_club_id INT REFERENCES clubs(club_id),
-    player_code VARCHAR(20),
     country_of_birth VARCHAR(255),
-    city_of_birth VARCHAR(255),
     country_of_citizenship VARCHAR(255),
     date_of_birth DATE,
-    sub_position VARCHAR(50),
     position VARCHAR(50),
     foot VARCHAR(10),
     height_in_cm INT,
     market_value_in_eur DECIMAL(15, 2),
     highest_market_value_in_eur DECIMAL(15, 2),
     contract_expiration_date DATE,
-    agent_name VARCHAR(255),
     image_url VARCHAR(255),
     url VARCHAR(255),
-    current_club_domestic_competition_id INT REFERENCES competitions(competition_id),--Silinmeli?
-    current_club_name VARCHAR(255)--Silinmeli?
-=======
-    
->>>>>>> bfec1f754e41acf360db41eaa13287225af706c7
+
 );
 -- Table: clubs
 CREATE TABLE clubs (
