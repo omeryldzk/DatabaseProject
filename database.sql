@@ -55,30 +55,12 @@ CREATE TABLE game_lineups (
 );
 
 -- Table: players
-CREATE TABLE players (
+CREATE TABLE player (
     player_id INT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     name VARCHAR(255),
-    last_season VARCHAR(10),
-    current_club_id INT REFERENCES clubs(club_id),
-    player_code VARCHAR(20),
-    country_of_birth VARCHAR(255),
-    city_of_birth VARCHAR(255),
-    country_of_citizenship VARCHAR(255),
-    date_of_birth DATE,
-    sub_position VARCHAR(50),
-    position VARCHAR(50),
-    foot VARCHAR(10),
-    height_in_cm INT,
-    market_value_in_eur DECIMAL(15, 2),
-    highest_market_value_in_eur DECIMAL(15, 2),
-    contract_expiration_date DATE,
-    agent_name VARCHAR(255),
-    image_url VARCHAR(255),
-    url VARCHAR(255),
-    current_club_domestic_competition_id INT REFERENCES competitions(competition_id),
-    current_club_name VARCHAR(255)
+    
 );
 -- Table: clubs
 CREATE TABLE clubs (
