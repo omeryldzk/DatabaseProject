@@ -55,11 +55,12 @@ CREATE TABLE game_lineups (
 );
 
 -- Table: players
-CREATE TABLE players (
+CREATE TABLE player (
     player_id INT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     name VARCHAR(255),
+<<<<<<< HEAD
     last_season VARCHAR(10),
     current_club_id INT REFERENCES clubs(club_id),
     player_code VARCHAR(20),
@@ -79,6 +80,9 @@ CREATE TABLE players (
     url VARCHAR(255),
     current_club_domestic_competition_id INT REFERENCES competitions(competition_id),--Silinmeli?
     current_club_name VARCHAR(255)--Silinmeli?
+=======
+    
+>>>>>>> bfec1f754e41acf360db41eaa13287225af706c7
 );
 -- Table: clubs
 CREATE TABLE clubs (
