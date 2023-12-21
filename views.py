@@ -4,7 +4,7 @@ from models.players import Player
 from passlib.hash import pbkdf2_sha256 as hasher
 from forms import LoginForm 
 from models.user import get_user
-from flask_login import logout_user,login_user
+from flask_login import current_user, logout_user,login_user
 def home_page():
     today = datetime.today()
     day_name = today.strftime("%A")
@@ -73,6 +73,32 @@ def validate_player_form(form):
             form.data["age"] = age
 
     return len(form.errors) == 0
+
+def clubs_page(competition_id):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        clubs = db.get_clubs_of_competition(competition_id)
+        return render_template("clubs.html", clubs=clubs)
+    else:
+        search = request.form.get("search")
+        if search:
+            clubs = db.get_clubs_by_search(search)
+            if clubs == None:
+                flash("NO RESULTS FOUND", "warning")
+                clubs = db.get_clubs_of_competition(competition_id)
+                return render_template("clubs.html", clubs=clubs)
+            else:
+                flash("RESULTS FOUND:", "success")
+                return render_template("clubs.html", clubs=clubs)
+        if not current_user.is_admin:
+            abort(401)
+        form_club_id_list = request.form.getlist("club_ids")
+        for form_club_id in form_club_id_list:
+            db.delete_club(int(form_club_id))
+            flash("Club has been deleted", "success")
+        return redirect(url_for("clubs_page"))
+
+
 def login_page():
     form = LoginForm()
     if form.validate_on_submit():

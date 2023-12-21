@@ -468,11 +468,24 @@ def get_clubs_of_competition(self,competition_id):
                     url
                 FROM
                     clubs
-                WHERE domestic_competition_id = %s;
+                WHERE domestic_competition_id = %s ORDER BY club_id;
             """
             cursor.execute(query, (competition_id,))
             for club_id, club_code, name, domestic_competition_id,total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage,national_team_players, stadium_name,stadium_seats,net_transfer_record, coach_name, last_season, url in cursor:
                 clubs.append((club_id, Club(club_id, club_code, name, domestic_competition_id, total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats, net_transfer_record, coach_name, last_season, url)))
+    return clubs
+
+def get_clubs_by_search(self, search_word):
+    clubs = []
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """SELECT * FROM clubs WHERE club_id::text LIKE %s OR club_code LIKE %s OR clubs.name LIKE %s ORDER BY club_id;"""
+            search_word = "%" + search_word + "%"
+            cursor.execute(query, (search_word, search_word, search_word,))
+            if cursor.rowcount == 0:
+                return None
+            for club_id, club_code, name, domestic_competition_id, total_market_value, squad_size, average_age,foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats, net_transfer_record, coach_name, last_season, url in cursor:
+                clubs.append((club_id, Club(club_id,club_code, name,domestic_competition_id,total_market_value,squad_size,average_age,foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats, net_transfer_record, coach_name,last_season, url)))
     return clubs
 
 def add_club(self, club_in):
