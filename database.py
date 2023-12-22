@@ -249,35 +249,38 @@ def get_players(self, player_id):
         name
     )
     return player
-def get_player_name(self, player_id, name):
+def get_player_by_name(self, name):
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
             query = """
                 SELECT
+                    id,
                     first_name,
                     last_name,
-                    name,
+                    name
                 FROM
                     player
                 WHERE
-                    id = %s;
+                    name = %s;
             """
             cursor.execute(query, (name,))
             if cursor.rowcount == 0:
                 return None
             (
+                player_id,
                 first_name,
                 last_name,
-                name,
+                player_name,
             ) = cursor.fetchone()
 
     player = Player(
         player_id,
         first_name,
         last_name,
-        name
+        player_name
     )
     return player
+
 def add_player(self, player_data):
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
@@ -310,6 +313,155 @@ def delete_player(self, player_id):
         with connection.cursor() as cursor:
             query = "DELETE FROM player WHERE player_id = %s;"
             cursor.execute(query, (player_id,))
+            
+def update_player_atr(self, atr_key, player_atr):
+        with dbapi2.connect(self.db_url) as connection:
+            with connection.cursor() as cursor:
+                query = """UPDATE player_attributes
+                    SET
+                        sub_position = %s,
+                        position = %s,
+                        foot = %s,
+                        height_in_cm = %s,
+                        market_value_in_eur = %s,
+                        highest_market_value_in_eur = %s,
+                        contract_expiration_date = %s
+                    WHERE
+                        id = %s;"""
+                cursor.execute(query, (player_atr.sub_position, player_atr.position, player_atr.foot, player_atr.height_in_cm, player_atr.market_value_in_eur,
+                                       player_atr.highest_market_value_in_eur,player_atr.contract_expiration_date, atr_key))
+def get_player_attributes(self, player_id):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    player_code,
+                    sub_position,
+                    position,
+                    foot,
+                    height_in_cm,
+                    market_value_in_eur,
+                    highest_market_value_in_eur,
+                    contract_expiration_date
+                FROM
+                    player_attributes
+                WHERE
+                    player_id = %s;
+            """
+            cursor.execute(query, (player_id,))
+            if cursor.rowcount == 0:
+                return None
+            (
+                player_code,
+                sub_position,
+                position,
+                foot,
+                height_in_cm,
+                market_value_in_eur,
+                highest_market_value_in_eur,
+                contract_expiration_date
+            ) = cursor.fetchone()
+
+    player_attributes = PlayerAttributes(
+        player_id,
+        player_code,
+        sub_position,
+        position,
+        foot,
+        height_in_cm,
+        market_value_in_eur,
+        highest_market_value_in_eur,
+        contract_expiration_date
+    )
+    return player_attributes
+def add_player_attributes(self, player_attributes_data):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                INSERT INTO player_attributes (player_id, player_code, sub_position, position, foot, height_in_cm, market_value_in_eur, highest_market_value_in_eur, contract_expiration_date)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """
+            cursor.execute(query, (
+                player_attributes_data['player_id'],
+                player_attributes_data['player_code'],
+                player_attributes_data['sub_position'],
+                player_attributes_data['position'],
+                player_attributes_data['foot'],
+                player_attributes_data['height_in_cm'],
+                player_attributes_data['market_value_in_eur'],
+                player_attributes_data['highest_market_value_in_eur'],
+                player_attributes_data['contract_expiration_date']
+            ))
+            player_key = cursor.fetchone()[0]
+    return player_key
+def get_player_bio(self, player_id):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    first_name,
+                    last_name,
+                    name,
+                    country_of_birth,
+                    city_of_birth,
+                    country_of_citizenship,
+                    date_of_birth
+                FROM
+                    player_bio
+                WHERE
+                    player_id = %s;
+            """
+            cursor.execute(query, (player_id,))
+            if cursor.rowcount == 0:
+                return None
+            (
+                first_name,
+                last_name,
+                name,
+                country_of_birth,
+                city_of_birth,
+                country_of_citizenship,
+                date_of_birth
+            ) = cursor.fetchone()
+
+    player_bio = PlayerBio(
+        player_id,
+        first_name,
+        last_name,
+        name,
+        country_of_birth,
+        city_of_birth,
+        country_of_citizenship,
+        date_of_birth
+    )
+    return player_bio
+
+def get_player_photo(self, player_id):
+    with dbapi2.connect(self.db_url) as connection:
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    image_url,
+                    url
+                FROM
+                    player_photo
+                WHERE
+                    player_id = %s;
+            """
+            cursor.execute(query, (player_id,))
+            if cursor.rowcount == 0:
+                return None
+            (
+                image_url,
+                url
+            ) = cursor.fetchone()
+
+    player_photo = PlayerPhoto(
+        player_id,
+        image_url,
+        url
+    )
+    return player_photo
 
 def get_club(self, club_id):
     with dbapi2.connect(self.db_url) as connection:
@@ -376,137 +528,6 @@ def get_club(self, club_id):
         url
     )
     return club
-def get_player_bio(self, player_id):
-    with dbapi2.connect(self.db_url) as connection:
-        with connection.cursor() as cursor:
-            query = """
-                SELECT
-                    first_name,
-                    last_name,
-                    name,
-                    country_of_birth,
-                    city_of_birth,
-                    country_of_citizenship,
-                    date_of_birth
-                FROM
-                    player_bio
-                WHERE
-                    player_id = %s;
-            """
-            cursor.execute(query, (player_id,))
-            if cursor.rowcount == 0:
-                return None
-            (
-                first_name,
-                last_name,
-                name,
-                country_of_birth,
-                city_of_birth,
-                country_of_citizenship,
-                date_of_birth
-            ) = cursor.fetchone()
-
-    player_bio = PlayerBio(
-        player_id,
-        first_name,
-        last_name,
-        name,
-        country_of_birth,
-        city_of_birth,
-        country_of_citizenship,
-        date_of_birth
-    )
-    return player_bio
-def get_player_attributes(self, player_id):
-    with dbapi2.connect(self.db_url) as connection:
-        with connection.cursor() as cursor:
-            query = """
-                SELECT
-                    player_code,
-                    sub_position,
-                    position,
-                    foot,
-                    height_in_cm,
-                    market_value_in_eur,
-                    highest_market_value_in_eur,
-                    contract_expiration_date
-                FROM
-                    player_attributes
-                WHERE
-                    player_id = %s;
-            """
-            cursor.execute(query, (player_id,))
-            if cursor.rowcount == 0:
-                return None
-            (
-                player_code,
-                sub_position,
-                position,
-                foot,
-                height_in_cm,
-                market_value_in_eur,
-                highest_market_value_in_eur,
-                contract_expiration_date
-            ) = cursor.fetchone()
-
-    player_attributes = PlayerAttributes(
-        player_id,
-        player_code,
-        sub_position,
-        position,
-        foot,
-        height_in_cm,
-        market_value_in_eur,
-        highest_market_value_in_eur,
-        contract_expiration_date
-    )
-    return player_attributes
-def add_player_attributes(self, player_attributes_data):
-    with dbapi2.connect(self.db_url) as connection:
-        with connection.cursor() as cursor:
-            query = """
-                INSERT INTO player_attributes (player_id, player_code, sub_position, position, foot, height_in_cm, market_value_in_eur, highest_market_value_in_eur, contract_expiration_date)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-            """
-            cursor.execute(query, (
-                player_attributes_data['player_id'],
-                player_attributes_data['player_code'],
-                player_attributes_data['sub_position'],
-                player_attributes_data['position'],
-                player_attributes_data['foot'],
-                player_attributes_data['height_in_cm'],
-                player_attributes_data['market_value_in_eur'],
-                player_attributes_data['highest_market_value_in_eur'],
-                player_attributes_data['contract_expiration_date']
-            ))
-            player_key = cursor.fetchone()[0]
-    return player_key
-def get_player_photo(self, player_id):
-    with dbapi2.connect(self.db_url) as connection:
-        with connection.cursor() as cursor:
-            query = """
-                SELECT
-                    image_url,
-                    url
-                FROM
-                    player_photo
-                WHERE
-                    player_id = %s;
-            """
-            cursor.execute(query, (player_id,))
-            if cursor.rowcount == 0:
-                return None
-            (
-                image_url,
-                url
-            ) = cursor.fetchone()
-
-    player_photo = PlayerPhoto(
-        player_id,
-        image_url,
-        url
-    )
-    return player_photo
 
 def get_clubs_by_search(self, search_word):
     clubs = []
@@ -536,7 +557,7 @@ def add_club(self, club_in):
             cursor.execute(query, (club_in.club_id, club_in.club_code, club_in.name, club_in.domestic_competition_id))
             club_key = cursor.fetchone()[0]
     return club_key
-def update_team(self, club_id, club):
+def update_club(self, club_id, club):
         with dbapi2.connect(self.db_url) as connection:
             with connection.cursor() as cursor:
                 query = """UPDATE clubs

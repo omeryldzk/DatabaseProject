@@ -16,11 +16,19 @@ def create_app():
     app.config.from_object("settings")
 
     app.add_url_rule("/", view_func=views.home_page)
-    app.add_url_rule("/players", view_func=views.players_page, methods=["GET","POST"])
-    app.add_url_rule("/players/<int:player_key>", view_func=views.player_page)
-    app.add_url_rule(
-        "/new-player", view_func=views.player_add_page, methods=["GET", "POST"]
-    )
+     #######################   PLAYERS   ########################
+    app.add_url_rule("/players", view_func=views.players_page, methods=["GET", "POST"])
+    app.add_url_rule("/players/<int:player_id>", view_func=views.player_page)
+    app.add_url_rule("/add_player", view_func=views.add_player_page, methods=["GET", "POST"])
+    app.add_url_rule("/players/<int:player_id>/edit", view_func=views.edit_player_page, methods=["GET", "POST"])
+    app.add_url_rule("/player_delete/<int:id>/", view_func=views.delete_player_page)
+    #######################   PLAYER ATTRIBUTES ########################
+    app.add_url_rule("/players_attributes", view_func=views.players_attributes_page,  methods=["GET", "POST"])
+    app.add_url_rule("/player_attributes/<int:player_id>", view_func=views.player_attributes_page)
+    app.add_url_rule("/add_player_attributes", view_func=views.add_player_attributes_page, methods=["GET", "POST"])
+    app.add_url_rule("/players_attributes/<int:player_attributes_id>/edit", view_func=views.edit_player_attributes_page, methods=["GET", "POST"])
+    app.add_url_rule("/players_attributes_delete/<int:id>/", view_func=views.delete_player_attributes_page)
+    
     app.add_url_rule(
         "/login", view_func=views.login_page, methods=["GET", "POST"]
     )

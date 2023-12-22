@@ -1,16 +1,98 @@
 from datetime import datetime
 from flask import current_app, render_template, redirect, request, url_for,flash,abort
-from models.player import Player
 from passlib.hash import pbkdf2_sha256 as hasher
-from forms import LoginForm 
+from forms import LoginForm,PlayerAttributesForm,PlayerForm
+from psycopg2 import Error, errors
 from models.user import get_user
-from flask_login import current_user, logout_user,login_user
+from models.player import Player
+from models.clubs import Club
+from models.competitions import Competitions
+from models.game_lineups import GameLineup
+from models.games import Games
+from models.player_bio import PlayerBio
+from models.player_attributes import PlayerAttributes
+from models.player_photo import PlayerPhoto
+from flask_login import current_user, logout_user,login_user,login_required
 def home_page():
     today = datetime.today()
     day_name = today.strftime("%A")
     return render_template("home.html", day=day_name)
 
+################################ PLAYER ########################################
 
+@login_required
+def add_player_page():
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    form = PlayerAttributesForm()
+    db = current_app.config["db"]
+
+    if form.validate_on_submit():
+        name = form.data["name"]
+        first_name = form.data["first_name"]
+        last_name = form.data["last_name"]
+
+        player = Player(
+            id=0,  # Assuming you set id to 0 for a new player
+            name=name,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        try:
+            db.add_player(player)  # Adjust this based on your actual method to add a player
+        except Error as e:
+            if isinstance(e, errors.ForeignKeyViolation):
+                flash("There is no related team!", "danger")
+                return render_template("add_player.html", form=form)
+            # Handle other errors as needed
+
+        flash("Player is added.", "success")
+        return redirect(url_for("players_page"))
+
+    return render_template("add_player.html", form=form)
+@login_required
+def delete_player_page(id):
+    if not current_user.is_admin:
+        abort(401) # “Unauthorized” error
+    db = current_app.config["db"]
+    db.delete_player(id)
+    players = db.get_players()
+    flash("Player deleted","success ")
+    return render_template("players.html", players = players)
+
+@login_required
+def edit_player_page(player_id):
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+    db = current_app.config["db"]
+    player = db.get_player(player_id)
+    if player is None:
+        abort(404)
+    form = PlayerForm()
+    if form.validate_on_submit():
+        name = form.data["name"]
+        first_name = form.data["first_name"]
+        last_name = form.data["last_name"]
+        updated_player = Player(
+            id=player.id,
+            name=name,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        try:
+            db.update_player(player_id, updated_player)  
+        except Error as e:
+            if isinstance(e, errors.UniqueViolation):
+                flash("Values must be unique!", "danger")
+            return render_template("player_edit.html", form=form)
+        flash("Player is updated.", "success")
+        return redirect(url_for("player_page", player_id=player_id))
+    form.name.data = player.name
+    form.first_name.data = player.first_name
+    form.last_name.data = player.last_name
+    return render_template("player_edit.html", form=form)
 def players_page():
     db = current_app.config["db"]
     if request.method == "GET":
@@ -26,53 +108,151 @@ def player_page(player_key):
     db = current_app.config["db"]
     player = db.get_player(player_key)
     return render_template("player.html", player=player)
-def player_add_page():
+################################ PLAYER ATTRIBUTES ########################################
+def players_attributes_page():
+    db = current_app.config["db"]
     if request.method == "GET":
-        values = {"name": "", "age": ""}
-        return render_template(
-            "player_edit.html",
-            min_year=18,
-            max_year=49,
-            values=values,
+        player_attributes = db.get_players_attributes()
+        return render_template("player_attributes.html", player_attributes=player_attributes)
+    else:
+        player_attributes_to_delete = request.form.get("player_attributes_to_delete")
+        db.delete_player_attributes(int(player_attributes_to_delete))
+        flash("Player attributes are deleted.", "success")
+        return redirect(url_for("players_attributes_page"))
+def player_attributes_page(player_id):
+    db = current_app.config["db"]
+    player_attributes = db.get_player_attributes(player_id)
+    if player_attributes is None:
+        abort(404)  #HTTP “Not Found” (404) error.
+    return render_template("individual_player_attributes.html", player_attributes=player_attributes)
+@login_required
+def edit_attributes_page(attributes_id):
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    db = current_app.config["db"]
+    attributes = db.get_player_attributes(attributes_id)
+
+    if attributes is None:
+        abort(404)
+
+    form = PlayerAttributesForm()
+
+    if form.validate_on_submit():
+        # Adjust the form field names based on your actual form structure
+        sub_position = form.data["sub_position"]
+        position = form.data["position"]
+        foot = form.data["foot"]
+        height_in_cm = form.data["height_in_cm"]
+        market_value_in_eur = form.data["market_value_in_eur"]
+        highest_market_value_in_eur = form.data["highest_market_value_in_eur"]
+        contract_expiration_date = form.data["contract_expiration_date"]
+
+        updated_attributes = PlayerAttributes(
+            id=attributes.id,
+            player_code=attributes.player_code,
+            sub_position=sub_position,
+            position=position,
+            foot=foot,
+            height_in_cm=height_in_cm,
+            market_value_in_eur=market_value_in_eur,
+            highest_market_value_in_eur=highest_market_value_in_eur,
+            contract_expiration_date=contract_expiration_date,
         )
-    else:
-        valid = validate_player_form(request.form)
-        if not valid:
-            return render_template(
-                "player_edit.html",
-                min_year=18,
-                max_year=49,
-                values=request.form,
-            )
-        name = request.form.data["name"]
-        age = request.form.data["age"]
-        player = Player(name, age=age)
-        db = current_app.config["db"]
-        player_key = db.add_player(player)
-        return redirect(url_for("player_page", player_key=player_key))
-def validate_player_form(form):
-    form.data = {}
-    form.errors = {}
 
-    form_name = form.get("name", "").strip()
-    if len(form_name) == 0:
-        form.errors["name"] = "Name can not be blank."
-    else:
-        form.data["name"] = form_name
+        try:
+            db.update_player_atr(attributes_id, updated_attributes)
+        except Error as e:
+            if isinstance(e, errors.UniqueViolation):
+                flash("Values must be unique!", "danger")
+            return render_template("attributes_edit.html", form=form)
 
-    form_age = form.get("age")
-    if not form_age:
-        form.data["age"] = None
-    elif not form_age.isdigit():
-        form.errors["year"] = "Age must consist of digits only."
-    else:
-        age = int(form_age)
-        if (age < 18) or (age > 49):
-            form.errors["age"] = "Year not in valid range."
-        else:
-            form.data["age"] = age
+        flash("Attributes are updated.", "success")
+        return redirect(url_for("attributes_page", attributes_id=attributes_id))
 
-    return len(form.errors) == 0
+    form.sub_position.data = attributes.sub_position
+    form.position.data = attributes.position
+    form.foot.data = attributes.foot
+    form.height_in_cm.data = attributes.height_in_cm
+    form.market_value_in_eur.data = attributes.market_value_in_eur
+    form.highest_market_value_in_eur.data = attributes.highest_market_value_in_eur
+    form.contract_expiration_date.data = attributes.contract_expiration_date
+
+    return render_template("attributes_edit.html", form=form)
+
+@login_required
+def delete_attributes_page(attributes_id):
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    db = current_app.config["db"]
+    attributes = db.get_player_attributes(attributes_id)
+
+    if attributes is None:
+        abort(404)
+
+    try:
+        db.delete_player_attributes(attributes_id)
+    except Error as e:
+        flash("Error deleting attributes.", "danger")
+        return redirect(url_for("attributes_page", attributes_id=attributes_id))
+
+    flash("Attributes deleted.", "success")
+    return redirect(url_for("attributes_page"))
+
+@login_required
+def add_attributes_page():
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    form = PlayerAttributesForm()
+    db = current_app.config["db"]
+
+    if form.validate_on_submit():
+        # Adjust the form field names based on your actual form structure
+        player_code = form.data["player_code"]
+        sub_position = form.data["sub_position"]
+        position = form.data["position"]
+        foot = form.data["foot"]
+        height_in_cm = form.data["height_in_cm"]
+        market_value_in_eur = form.data["market_value_in_eur"]
+        highest_market_value_in_eur = form.data["highest_market_value_in_eur"]
+        contract_expiration_date = form.data["contract_expiration_date"]
+
+        attributes = PlayerAttributes(
+            id=0,  # Assuming you set id to 0 for a new set of attributes
+            player_code=player_code,
+            sub_position=sub_position,
+            position=position,
+            foot=foot,
+            height_in_cm=height_in_cm,
+            market_value_in_eur=market_value_in_eur,
+            highest_market_value_in_eur=highest_market_value_in_eur,
+            contract_expiration_date=contract_expiration_date,
+        )
+
+        try:
+            db.add_player_attributes(attributes)
+        except Error as e:
+            flash("Error adding attributes.", "danger")
+            return render_template("attributes_add.html", form=form)
+
+        flash("Attributes added.", "success")
+        return redirect(url_for("attributes_page"))
+
+    return render_template("attributes_add.html", form=form)
+
+def players_photos_page():
+    db = current_app.config["db"]
+    player_photos = db.get_player_photo()
+    return render_template("player_photos.html", player_photos=player_photos)
+
+def players_bios_page():
+    db = current_app.config["db"]
+    player_bios = db.get_player_bio()
+    return render_template("player_bios.html", player_bios=player_bios)
+
+################################ CLUBS ########################################
 
 def clubs_page(competition_id):
     db = current_app.config["db"]
