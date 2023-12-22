@@ -1,10 +1,67 @@
-{% extends "layout.html" %}
-{% block title %}Home{% endblock %}
-{% block content %}
-    <h1>My Players collection</h1>
-    <p>Have a nice {{ day }}!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>League Selection</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: black;
+      overflow-x: hidden; 
+    }
 
-    <ul>
-      <li><a href="{{ url_for('players_page') }}">List Players</a></li>
-    </ul>
-{% endblock %}
+    .container {
+      max-width: 100%;
+      margin: 50px auto;
+      text-align: center;
+      padding: 0 20px; 
+    }
+
+    h1 {
+      font-size: 30px;
+      margin: 20px;
+      margin-bottom: 70px;
+    }
+
+    .leagues {
+      display: flex;
+      justify-content: center;
+      align-items: center; 
+      flex-wrap: wrap;
+      margin-top: 20px;
+      overflow: auto; 
+    }
+
+    .leagues a {
+      margin: 10px;
+      text-decoration: none;
+      flex: 1 0 30%; 
+      max-width: 30%; 
+    }
+
+    .leagues img {
+      width: 100%; 
+      height: 60vh; 
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .leagues img:hover {
+      transform: scale(1.04);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Choose league:</h1>
+    <div class="leagues">
+      <a href="https://www.example.com/league1"><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b4ad0eb5-e825-4422-b4ca-51258238d3ad/daum9f4-69994fe1-edd8-4a95-84a7-4f69408b7f6c.jpg/v1/fill/w_1024,h_1510,q_75,strp/premier_league_logo_by_ricardo13011_daum9f4-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTUxMCIsInBhdGgiOiJcL2ZcL2I0YWQwZWI1LWU4MjUtNDQyMi1iNGNhLTUxMjU4MjM4ZDNhZFwvZGF1bTlmNC02OTk5NGZlMS1lZGQ4LTRhOTUtODRhNy00ZjY5NDA4YjdmNmMuanBnIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.WFQfhHGfBo9hVU52ZUpHYwN-5Fy8fp48xJdVp7A77c0" alt="League 1"></a>
+      <a href="https://www.example.com/league2"><img src="https://logowik.com/content/uploads/images/laliga6363.logowik.com.webp" alt="League 2"></a>
+      <a href="https://www.example.com/league3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Süper_Lig_logo.svg/2160px-Süper_Lig_logo.svg.png" alt="League 3"></a>
+    </div>
+  </div>
+</body>
+</html>
