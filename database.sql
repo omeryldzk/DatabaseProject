@@ -2,7 +2,7 @@
 
 -- Table: competitions
 CREATE TABLE competitions (
-    competition_id INT PRIMARY KEY,
+    competition_id INT NOT NULL PRIMARY KEY,
     competition_code VARCHAR(10),
     name VARCHAR(255),
     sub_type VARCHAR(50),
@@ -16,7 +16,7 @@ CREATE TABLE competitions (
 
 -- Table: games
 CREATE TABLE games (
-    game_id INT PRIMARY KEY,
+    game_id INT NOT NULL PRIMARY KEY,
     competition_id INT REFERENCES competitions(competition_id),
     season VARCHAR(10),
     round VARCHAR(50),
@@ -56,15 +56,26 @@ CREATE TABLE game_lineups (
 
 -- Table: players
 CREATE TABLE player (
-    player_id INT PRIMARY KEY,
+    player_id INT NOT NULL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     name VARCHAR(255),
     
 );
+-- Table: player photo
+CREATE TABLE player_photo (
+    id INT PRIMARY KEY,
+    player_id INT  NOT NULL REFERENCES player(id)
+        ON DELETE CASCADE 
+		ON UPDATE CASCADE,
+    image_url VARCHAR(255),
+    url VARCHAR(255),
+    FOREIGN KEY (player_id) REFERENCES player(id)
+);
+
 -- Table: clubs
 CREATE TABLE clubs (
-    club_id INT PRIMARY KEY,
+    club_id INT NOT NULL PRIMARY KEY,
     club_code VARCHAR(10),
     name VARCHAR(255),
     domestic_competition_id INT REFERENCES competitions(competition_id),
@@ -81,4 +92,33 @@ CREATE TABLE clubs (
     last_season VARCHAR(10),
     url VARCHAR(255)
 );
+-- Table player attributes
+CREATE TABLE player_attributes (
+    id INT PRIMARY KEY,
+    player_id INT  NOT NULL REFERENCES player(id)
+        ON DELETE CASCADE 
+		ON UPDATE CASCADE,
+    player_code VARCHAR(20),
+    sub_position VARCHAR(50),
+    position VARCHAR(50),
+    foot VARCHAR(10),
+    height_in_cm INT,
+    market_value_in_eur DECIMAL(15, 2),
+    highest_market_value_in_eur DECIMAL(15, 2),
+    contract_expiration_date DATE,
+);
 
+-- Table player bio
+CREATE TABLE player_bio (
+    id INT PRIMARY KEY,
+    player_id INT  NOT NULL REFERENCES player(id)
+        ON DELETE CASCADE 
+		ON UPDATE CASCADE,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    name VARCHAR(255),
+    country_of_birth VARCHAR(255),
+    city_of_birth VARCHAR(255),
+    country_of_citizenship VARCHAR(255),
+    date_of_birth DATE,
+);
