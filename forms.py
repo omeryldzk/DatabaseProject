@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, validators,IntegerField
+from wtforms import StringField, PasswordField, SubmitField, validators,IntegerField,DecimalField
 from wtforms.validators import DataRequired, Length, NumberRange
 
 
@@ -21,4 +21,20 @@ class PlayerForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=1, max=100)])
     first_name = StringField('First Name', validators=[Length(max=50)])
     last_name = StringField('Last Name', validators=[Length(max=50)])
+    submit = SubmitField('Submit')
+class ClubForm(FlaskForm):
+    club_code = StringField('Club Code', validators=[DataRequired(), Length(min=1, max=10)])
+    name = StringField('Name', validators=[DataRequired(), Length(min=1, max=255)])
+    total_market_value = DecimalField('Total Market Value (EUR)', validators=[NumberRange(min=0)])
+    squad_size = IntegerField('Squad Size', validators=[NumberRange(min=0)])
+    average_age = DecimalField('Average Age', validators=[NumberRange(min=0)])
+    foreigners_number = IntegerField('Foreigners Number', validators=[NumberRange(min=0)])
+    foreigners_percentage = DecimalField('Foreigners Percentage', validators=[NumberRange(min=0, max=100)])
+    national_team_players = IntegerField('National Team Players', validators=[NumberRange(min=0)])
+    stadium_name = StringField('Stadium Name', validators=[Length(max=255)])
+    stadium_seats = IntegerField('Stadium Seats', validators=[NumberRange(min=0)])
+    net_transfer_record = DecimalField('Net Transfer Record (EUR)', validators=[NumberRange(min=0)])
+    coach_name = StringField('Coach Name', validators=[Length(max=255)])
+    last_season = StringField('Last Season', validators=[Length(max=10)])
+    url = StringField('URL', validators=[Length(max=255)])
     submit = SubmitField('Submit')

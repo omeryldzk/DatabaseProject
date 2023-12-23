@@ -3,7 +3,7 @@ from flask_login import LoginManager
 import views
 from database import Database
 from models.user import get_user
-from models.players import Player
+from models.player import Player
 
 lm = LoginManager()
 
@@ -25,10 +25,21 @@ def create_app():
     #######################   PLAYER ATTRIBUTES ########################
     app.add_url_rule("/players_attributes", view_func=views.players_attributes_page,  methods=["GET", "POST"])
     app.add_url_rule("/player_attributes/<int:player_id>", view_func=views.player_attributes_page)
-    app.add_url_rule("/add_player_attributes", view_func=views.add_player_attributes_page, methods=["GET", "POST"])
-    app.add_url_rule("/players_attributes/<int:player_attributes_id>/edit", view_func=views.edit_player_attributes_page, methods=["GET", "POST"])
-    app.add_url_rule("/players_attributes_delete/<int:id>/", view_func=views.delete_player_attributes_page)
+    app.add_url_rule("/add_player_attributes", view_func=views.add_attributes_page, methods=["GET", "POST"])
+    app.add_url_rule("/players_attributes/<int:player_attributes_id>/edit", view_func=views.edit_attributes_page, methods=["GET", "POST"])
+    app.add_url_rule("/players_attributes_delete/<int:id>/", view_func=views.delete_attributes_page)
+    #######################   PLAYER PHOTOS   ########################
+    app.add_url_rule("/players_photos", view_func=views.players_photos_page)
     
+    #######################   PLAYER BIOS   ########################
+    app.add_url_rule("/players_bios", view_func=views.players_bios_page)
+    #################### CLUBS ###############################
+    app.add_url_rule("/clubs/<int:competition_id>", view_func=views.clubs_page, methods=["GET", "POST"])
+    app.add_url_rule("/clubs/<int:club_id>", view_func=views.club_page)
+    app.add_url_rule("/clubs/<int:club_id>/edit", view_func=views.club_edit_page, methods=["GET", "POST"])
+    app.add_url_rule("/add_club", view_func=views.club_add_page, methods=["GET", "POST"])
+    app.add_url_rule("/club_delete/<int:id>/", view_func=views.club_delete_page, methods=["GET", "POST"])
+
     app.add_url_rule(
         "/login", view_func=views.login_page, methods=["GET", "POST"]
     )

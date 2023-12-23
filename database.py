@@ -221,7 +221,7 @@ def get_player(self, player_id):
         name
     )
     return player
-def get_players(self, player_id):
+def get_players(self):
     with dbapi2.connect(self.db_url) as connection:
         with connection.cursor() as cursor:
             query = """
@@ -233,10 +233,11 @@ def get_players(self, player_id):
                     player
                 ORDER BY id;
             """
-            cursor.execute(query, (player_id,))
+            cursor.execute(query)
             if cursor.rowcount == 0:
                 return None
             (
+                player_id,
                 first_name,
                 last_name,
                 name,

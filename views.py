@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import current_app, render_template, redirect, request, url_for,flash,abort
 from passlib.hash import pbkdf2_sha256 as hasher
-from forms import LoginForm,PlayerAttributesForm,PlayerForm
+from forms import LoginForm,PlayerAttributesForm,PlayerForm,ClubForm
 from psycopg2 import Error, errors
 from models.user import get_user
 from models.player import Player
@@ -277,8 +277,137 @@ def clubs_page(competition_id):
             db.delete_club(int(form_club_id))
             flash("Club has been deleted", "success")
         return redirect(url_for("clubs_page"))
+def club_page(club_id):
+    db = current_app.config["db"]
+    club = db.get_club(club_id)
+    if club is None:
+        abort(404)  #HTTP “Not Found” (404) error.
+    return render_template("club_spesific.html", club=club)
 
+@login_required
+def club_add_page():
+    # Check if the current user is an admin
+    if not current_user.is_admin:
+        abort(401)  # Unauthorized error
 
+    # Create an instance of the ClubEditForm
+    form = ClubForm()
+
+    # Access the database from the Flask app configuration
+    db = current_app.config["db"]
+
+    # Validate the form on submission
+    if form.validate_on_submit():
+        # Extract form data
+        club_code = form.data["clubCode"]
+        name = form.data["name"]
+        domestic_competition_id = form.data["domesticCompetitionId"]
+        total_market_value = form.data["totalMarketValue"]
+        squad_size = form.data["squadSize"]
+        average_age = form.data["averageAge"]
+        foreigners_number = form.data["foreignersNumber"]
+        foreigners_percentage = form.data["foreignersPercentage"]
+        national_team_players = form.data["nationalTeamPlayers"]
+        stadium_name = form.data["stadiumName"]
+        stadium_seats = form.data["stadiumSeats"]
+        net_transfer_record = form.data["netTransferRecord"]
+        coach_name = form.data["coachName"]
+        last_season = form.data["lastSeason"]
+        url = form.data["url"]
+
+        # Create a Club instance
+        club = Club(
+            club_id=0,
+            club_code=club_code,
+            name=name,
+            domestic_competition_id=domestic_competition_id,
+            total_market_value=total_market_value,
+            squad_size=squad_size,
+            average_age=average_age,
+            foreigners_number=foreigners_number,
+            foreigners_percentage=foreigners_percentage,
+            national_team_players=national_team_players,
+            stadium_name=stadium_name,
+            stadium_seats=stadium_seats,
+            net_transfer_record=net_transfer_record,
+            coach_name=coach_name,
+            last_season=last_season,
+            url=url
+        )
+
+        try:
+            # Add the Club to the database
+            db.add_club(club)
+        except Error as e:
+            if isinstance(e, errors.ForeignKeyViolation):
+                flash("There is an issue with foreign key constraints!", "danger")
+            return render_template("club_add.html", form=form)
+        
+        flash("Club added successfully!", "success")
+        return redirect(url_for("clubs_page"))
+
+    return render_template("club_add.html", form=form)
+
+@login_required
+def club_edit_page(club_id):
+    # Check if the current user is an admin
+    if not current_user.is_admin:
+        abort(401)  # Unauthorized error
+
+    # Access the database from the Flask app configuration
+    db = current_app.config["db"]
+
+    # Retrieve the club from the database
+    club = db.get_club(club_id)
+
+    # Check if the club exists
+    if not club:
+        flash("Club not found!", "danger")
+        return redirect(url_for("clubs_page"))
+
+    # Create an instance of the ClubEditForm and populate it with the current club data
+    form = ClubForm(obj=club)
+
+    # Validate the form on submission
+    if form.validate_on_submit():
+        # Update club data with form data
+        form.populate_obj(club)
+
+        try:
+            # Update the Club in the database
+            db.update_club(club_id,club)
+        except Error as e:
+            if isinstance(e, errors.ForeignKeyViolation):
+                flash("There is an issue with foreign key constraints!", "danger")
+            return render_template("club_edit.html", form=form, club_id=club_id)
+
+        flash("Club updated successfully!", "success")
+        return redirect(url_for("clubs_page"))
+
+    return render_template("club_edit.html", form=form, club_id=club_id)
+
+@login_required
+def club_delete_page(club_id):
+    # Check if the current user is an admin
+    if not current_user.is_admin:
+        abort(401)  # Unauthorized error
+
+    # Access the database from the Flask app configuration
+    db = current_app.config["db"]
+
+    # Retrieve the club from the database
+    club = db.get_club(club_id)
+
+    # Check if the club exists
+    if not club:
+        flash("Club not found!", "danger")
+        return redirect(url_for("clubs_page"))
+
+    # Delete the Club from the database
+    db.delete_club(club_id)
+
+    flash("Club deleted successfully!", "success")
+    return redirect(url_for("clubs_page"))
 def login_page():
     form = LoginForm()
     if form.validate_on_submit():
