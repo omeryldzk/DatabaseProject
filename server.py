@@ -66,7 +66,9 @@ def create_app():
     lm.login_message_category = "warning"
     lm.login_view = "login_page"
     
-    db = Database()
+    db_url = "postgres://ylfqputg:xTs4QCLXPs_km6yan6I268VzNUkl3KLb@lucky.db.elephantsql.com/ylfqputg"
+
+    db = Database(db_url)
     app.config["db"] = db
     
     return app
