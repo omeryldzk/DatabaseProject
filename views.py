@@ -1,13 +1,12 @@
 from datetime import datetime
 from flask import current_app, render_template, redirect, request, url_for,flash,abort
 from passlib.hash import pbkdf2_sha256 as hasher
-from forms import LoginForm,PlayerAttributesForm,PlayerForm,ClubForm
+from forms import LoginForm,PlayerAttributesForm,PlayerForm,ClubForm,GameAddForm,GameEditForm
 from psycopg2 import Error, errors
 from models.user import get_user
 from models.player import Player
 from models.clubs import Club
 from models.competitions import Competitions
-from models.game_lineups import GameLineup
 from models.games import Games
 from models.player_bio import PlayerBio
 from models.player_attributes import PlayerAttributes
@@ -103,12 +102,35 @@ def players_page():
         for form_player_keys in form_player_keys:
             db.delete_player(int(form_player_keys))
         return redirect(url_for("players_page"))
-    
+def comp_player_page(competition_id):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        players = db.get_players_of_competition(competition_id)
+        return render_template("comp_players.html", players=sorted(players))
+    else:
+        form_player_keys = request.form.getlist("player_keys")
+        for form_player_keys in form_player_keys:
+            db.delete_player(int(form_player_keys))
+        return redirect(url_for("comp_player_page"))
+def club_player_page(club_id):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        players = db.get_players_of_competition(club_id)
+        return render_template("club_players.html", players=sorted(players))
+    else:
+        form_player_keys = request.form.getlist("player_keys")
+        for form_player_keys in form_player_keys:
+            db.delete_player(int(form_player_keys))
+        return redirect(url_for("club_player_page"))
 def player_page(player_key):
     db = current_app.config["db"]
     player = db.get_player(player_key)
     return render_template("player.html", player=player)
+
+
 ################################ PLAYER ATTRIBUTES ########################################
+
+
 def players_attributes_page():
     db = current_app.config["db"]
     if request.method == "GET":
@@ -254,10 +276,10 @@ def players_bios_page():
 
 ################################ CLUBS ########################################
 
-def clubs_page(competition_id):
+def clubs_page():
     db = current_app.config["db"]
     if request.method == "GET":
-        clubs = db.get_clubs_of_competition(competition_id)
+        clubs = db.get_clubs()
         return render_template("clubs.html", clubs=clubs)
     else:
         search = request.form.get("search")
@@ -265,7 +287,7 @@ def clubs_page(competition_id):
             clubs = db.get_clubs_by_search(search)
             if clubs == None:
                 flash("NO RESULTS FOUND", "warning")
-                clubs = db.get_clubs_of_competition(competition_id)
+                clubs = db.get_clubs()
                 return render_template("clubs.html", clubs=clubs)
             else:
                 flash("RESULTS FOUND:", "success")
@@ -277,6 +299,29 @@ def clubs_page(competition_id):
             db.delete_club(int(form_club_id))
             flash("Club has been deleted", "success")
         return redirect(url_for("clubs_page"))
+def comp_clubs_page(competition_id):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        clubs = db.get(competition_id)
+        return render_template("comp_clubs.html", clubs=clubs)
+    else:
+        search = request.form.get("search")
+        if search:
+            clubs = db.get_clubs_by_search(search)
+            if clubs == None:
+                flash("NO RESULTS FOUND", "warning")
+                clubs = db.get_clubs_of_competition(competition_id)
+                return render_template("comp_clubs.html", clubs=clubs)
+            else:
+                flash("RESULTS FOUND:", "success")
+                return render_template("comp_clubs.html", clubs=clubs)
+        if not current_user.is_admin:
+            abort(401)
+        form_club_id_list = request.form.getlist("club_ids")
+        for form_club_id in form_club_id_list:
+            db.delete_club(int(form_club_id))
+            flash("Club has been deleted", "success")
+        return redirect(url_for("comp_clubs_page"))
 def club_page(club_id):
     db = current_app.config["db"]
     club = db.get_club(club_id)
@@ -408,6 +453,182 @@ def club_delete_page(club_id):
 
     flash("Club deleted successfully!", "success")
     return redirect(url_for("clubs_page"))
+
+def games_page():
+    db = current_app.config["db"]
+    game = db.get_games()
+    if game is None:
+        abort(404)
+    return render_template("games.html", game = game)
+
+def club_games_page(club_id):
+    db = current_app.config["db"]
+    game = db.get_games_of_club(club_id)
+    if game is None:
+        abort(404)
+    return render_template("club_games.html", game = game)
+
+def comp_games_page(competition_id):
+    db = current_app.config["db"]
+    game = db.get_games_of_competition(competition_id)
+    if game is None:
+        abort(404)
+    return render_template("comp_games.html", game = game)
+
+def game_page(game_id):
+    db = current_app.config["db"]
+    game = db.get_game(game_id)
+    if game is None:
+        abort(404)
+    return render_template("game_single.html", game = game)
+
+@login_required
+def game_add_page():
+    db = current_app.config["db"]
+
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    form = GameAddForm()
+
+    if form.validate_on_submit():
+        competition_id = form.data["competition_id"]
+        season = form.data["season"]
+        date = form.data["date"]
+        home_club_id = form.data["home_club_id"]
+        away_club_id = form.data["away_club_id"]
+        home_club_goals = form.data["home_club_goals"]
+        away_club_goals = form.data["away_club_goals"]
+        home_club_position = form.data["home_club_position"]
+        away_club_position = form.data["away_club_position"]
+        home_club_manager_name = form.data["home_club_manager_name"]
+        away_club_manager_name = form.data["away_club_manager_name"]
+        stadium = form.data["stadium"]
+        attendance = form.data["attendance"]
+        referee = form.data["referee"]
+        url = form.data["url"]
+        home_club_name = form.data["home_club_name"]
+        away_club_name = form.data["away_club_name"]
+
+        game = Games(
+            game_id=None,
+            competition_id=competition_id,
+            season=season,
+            date=date,
+            home_club_id=home_club_id,
+            away_club_id=away_club_id,
+            home_club_goals=home_club_goals,
+            away_club_goals=away_club_goals,
+            home_club_position=home_club_position,
+            away_club_position=away_club_position,
+            home_club_manager_name=home_club_manager_name,
+            away_club_manager_name=away_club_manager_name,
+            stadium=stadium,
+            attendance=attendance,
+            referee=referee,
+            url=url,
+            home_club_name=home_club_name,
+            away_club_name=away_club_name,
+        )
+
+        try:
+            db.add_game(game)
+        except Error as e:
+            if isinstance(e, errors.UniqueViolation):
+                flash("Games must have unique IDs!", "danger")
+            if isinstance(e, errors.ForeignKeyViolation):
+                flash("There is no related team(s)", "danger")
+            return render_template("game_add.html", form=form, type="Add")
+
+        flash("Game is added.", "success")
+        return redirect(url_for("game_page", gameID=game.game_id))
+
+    return render_template("game_add.html", form=form, type="Add")
+
+@login_required
+def game_edit_page(game_id):
+    db = current_app.config["db"]
+
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    game = db.get_game(game_id)
+
+    if game is None:
+        flash("Game not found", "danger")
+        return redirect(url_for("game_page"))
+
+    form = GameEditForm()
+
+    if form.validate_on_submit():
+        # Update the game fields
+        game.competition_id = form.data["competition_id"]
+        game.season = form.data["season"]
+        game.date = form.data["date"]
+        game.home_club_id = form.data["home_club_id"]
+        game.away_club_id = form.data["away_club_id"]
+        game.home_club_goals = form.data["home_club_goals"]
+        game.away_club_goals = form.data["away_club_goals"]
+        game.home_club_position = form.data["home_club_position"]
+        game.away_club_position = form.data["away_club_position"]
+        game.home_club_manager_name = form.data["home_club_manager_name"]
+        game.away_club_manager_name = form.data["away_club_manager_name"]
+        game.stadium = form.data["stadium"]
+        game.attendance = form.data["attendance"]
+        game.referee = form.data["referee"]
+        game.url = form.data["url"]
+        game.home_club_name = form.data["home_club_name"]
+        game.away_club_name = form.data["away_club_name"]
+
+        try:
+            db.update_game(game,game_id)
+        except Error as e:
+            if isinstance(e, errors.UniqueViolation):
+                flash("Games must have unique IDs!", "danger")
+            if isinstance(e, errors.ForeignKeyViolation):
+                flash("There is no related team(s)", "danger")
+            return render_template("game_add.html", form=form, type="Update")
+
+        flash("Game is updated.", "success")
+        return redirect(url_for("games_page", gameID=game.game_id))
+
+    # Populate the form with existing game data
+    form.process(obj=game)
+
+    return render_template("game_edit.html", form=form, type="Update")
+
+
+@login_required
+def game_delete_page(game_id):
+    db = current_app.config["db"]
+
+    if not current_user.is_admin:
+        abort(401)  # “Unauthorized” error
+
+    game = db.get_game(game_id)
+
+    if game is None:
+        flash("Game not found", "danger")
+        return redirect(url_for("game_page"))
+
+    try:
+        db.delete_game(game_id)
+    except Error as e:
+        flash("Error deleting game", "danger")
+        return redirect(url_for("game_page"))
+
+    flash("Game is deleted.", "success")
+    return redirect(url_for("game_page"))
+
+def goals_page(game_id):
+    db = current_app.config["db"]
+    goals = db.get_goals_of_game(game_id)
+    if goals is None:
+        abort(404)
+    return render_template("goals_of_game.html", goals = goals)
+    
+
+
 def login_page():
     form = LoginForm()
     if form.validate_on_submit():
@@ -417,10 +638,15 @@ def login_page():
             password = form.data["password"]
             if hasher.verify(password, user.password):
                 login_user(user)
-                flash("You have logged in.")
+                # flash function registers a message that the user will see on the next page
+                flash("You have logged in.", "success")
+                # if an anonymous user visits the /movies/add page, they will be redirected 
+                # to the login page (because of the login_view setting, 
+                # and after successfully logging in, this part will redirect the user back to
+                #  the movie addition page.
                 next_page = request.args.get("next", url_for("home_page"))
                 return redirect(next_page)
-        flash("Invalid credentials.")
+        flash("Invalid credentials!", "danger")
     return render_template("login.html", form=form)
 
 
