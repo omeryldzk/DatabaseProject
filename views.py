@@ -31,12 +31,18 @@ def add_player_page():
         name = form.data["name"]
         first_name = form.data["first_name"]
         last_name = form.data["last_name"]
+        current_club_name = form.data["current_club_name"],
+        current_club_id = form.data["current_club_id"],
+        competition_id = form.data["competition_id"],
 
         player = Player(
             id=0,  # Assuming you set id to 0 for a new player
             name=name,
             first_name=first_name,
             last_name=last_name,
+            current_club_name =current_club_name,
+            current_club_id=current_club_id,
+            competition_id = competition_id,
         )
 
         try:
@@ -74,11 +80,18 @@ def edit_player_page(player_id):
         name = form.data["name"]
         first_name = form.data["first_name"]
         last_name = form.data["last_name"]
+        current_club_name = form.data["current_club_name"]
+        current_club_id = form.data["current_club_id"]
+        competition_id = form.data["competition_id"]
+
         updated_player = Player(
             id=player.id,
             name=name,
             first_name=first_name,
             last_name=last_name,
+            current_club_name =current_club_name,
+            current_club_id=current_club_id,
+            competition_id = competition_id,
         )
         try:
             db.update_player(player_id, updated_player)  
@@ -91,6 +104,9 @@ def edit_player_page(player_id):
     form.name.data = player.name
     form.first_name.data = player.first_name
     form.last_name.data = player.last_name
+    form.current_club_name.data = player.current_club_name
+    form.current_club_id.data = player.current_club_id
+    form.competition_id.data = player.competition_id
     return render_template("player_edit.html", form=form)
 def players_page():
     db = current_app.config["db"]
@@ -115,7 +131,7 @@ def comp_player_page(competition_id):
 def club_player_page(club_id):
     db = current_app.config["db"]
     if request.method == "GET":
-        players = db.get_players_of_competition(club_id)
+        players = db.get_players_of_club(club_id)
         return render_template("club_players.html", players=sorted(players))
     else:
         form_player_keys = request.form.getlist("player_keys")
@@ -134,7 +150,7 @@ def player_page(player_key):
 def players_attributes_page():
     db = current_app.config["db"]
     if request.method == "GET":
-        player_attributes = db.get_player_attributes()
+        player_attributes = db.get_all_player_attributes()
         return render_template("player_attributes.html", player_attributes=player_attributes)
     else:
         player_attributes_to_delete = request.form.get("player_attributes_to_delete")
@@ -183,7 +199,7 @@ def edit_attributes_page(attributes_id):
         )
 
         try:
-            db.update_player_atr(attributes_id, updated_attributes)
+            db.update_player_attributes(attributes_id, updated_attributes)
         except Error as e:
             if isinstance(e, errors.UniqueViolation):
                 flash("Values must be unique!", "danger")
@@ -312,7 +328,7 @@ def clubs_page():
 def comp_clubs_page(competition_id):
     db = current_app.config["db"]
     if request.method == "GET":
-        clubs = db.get(competition_id)
+        clubs = db.get_clubs_of_competition(competition_id)
         return render_template("comp_clubs.html", clubs=clubs)
     else:
         search = request.form.get("search")
@@ -602,7 +618,6 @@ def game_edit_page(game_id):
         flash("Game is updated.", "success")
         return redirect(url_for("games_page", gameID=game.game_id))
 
-    # Populate the form with existing game data
     form.process(obj=game)
 
     return render_template("game_edit.html", form=form, type="Update")
@@ -613,7 +628,7 @@ def game_delete_page(game_id):
     db = current_app.config["db"]
 
     if not current_user.is_admin:
-        abort(401)  # “Unauthorized” error
+        abort(401)  
 
     game = db.get_game(game_id)
 

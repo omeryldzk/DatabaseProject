@@ -9,13 +9,14 @@ from models.player_attributes import PlayerAttributes
 from models.player_photo import PlayerPhoto
 import psycopg2 as dbapi2
 
+#conn = dbapi2.connect(host="localhost", user = "postgres", password = "12345678", database = "DatabaseProject")
 class Database:
     def __init__(self,db_url):
          self.db_url = db_url
  #######################   COMPETITION   ########################
 
     def get_competition(self, competition_id):
-        with dbapi2.connect(self.db_url) as connection:
+        with dbapi2.connect(host="localhost", user = "postgres", password = "12345678", database = "DatabaseProject") as connection:
             with connection.cursor() as cursor:
                 query = """
                     SELECT
@@ -59,14 +60,13 @@ class Database:
             )
             return competition
     def get_games(self):
-        with dbapi2.connect(self.db_url) as connection:
+        with dbapi2.connect(host="localhost", user = "postgres", password = "12345678", database = "DatabaseProject") as connection:
             with connection.cursor() as cursor:
                 query = """
                     SELECT
                         game_id,
                         competition_id,
                         season,
-                        round,
                         date,
                         home_club_id,
                         away_club_id,
@@ -80,12 +80,8 @@ class Database:
                         attendance,
                         referee,
                         url,
-                        home_club_formation,
-                        away_club_formation,
                         home_club_name,
-                        away_club_name,
-                        aggregate,
-                        competition_type
+                        away_club_name
                     FROM
                         games;
                 """
@@ -98,7 +94,6 @@ class Database:
                     game_id,
                     competition_id,
                     season,
-                    round,
                     date,
                     home_club_id,
                     away_club_id,
@@ -112,18 +107,13 @@ class Database:
                     attendance,
                     referee,
                     url,
-                    home_club_formation,
-                    away_club_formation,
                     home_club_name,
                     away_club_name,
-                    aggregate,
-                    competition_type
                 ) in cursor.fetchall():
                     game = Games(
                         game_id,
                         competition_id,
                         season,
-                        round,
                         date,
                         home_club_id,
                         away_club_id,
@@ -137,12 +127,8 @@ class Database:
                         attendance,
                         referee,
                         url,
-                        home_club_formation,
-                        away_club_formation,
                         home_club_name,
-                        away_club_name,
-                        aggregate,
-                        competition_type
+                        away_club_name
                     )
                     games.append(game)
 
@@ -238,7 +224,7 @@ class Database:
 
     def get_games_of_club(self, club_id_in):
         games = []
-        with dbapi2.connect(self.db_url) as connection:
+        with dbapi2.connect(host="localhost", user="postgres", password="12345678",database="DatabaseProject") as connection:
             with connection.cursor() as cursor:
                 query = """
                     SELECT 
@@ -248,8 +234,8 @@ class Database:
                     WHERE (games.home_club_id = %s OR games.away_club_id = %s)
                     """
                 cursor.execute(query, (club_id_in,club_id_in))
-                for game_id, competition_id, season, date, home_club_id, away_club_id, home_club_goals, away_club_goals, home_club_position, away_club_position, stadium, attendance, referee, url, home_club_formation, away_club_formation in cursor:
-                    games.append(Games(game_id, competition_id, season, date, home_club_id, away_club_id, home_club_goals, away_club_goals, home_club_position, away_club_position,stadium,attendance, referee,url, home_club_formation, away_club_formation))
+                for game_id, competition_id, season, date, home_club_id, away_club_id, home_club_goals, away_club_goals, home_club_position, away_club_position,home_club_manager_name, away_club_manager_name, stadium, attendance, referee, url,home_club_name,away_club_name in cursor:
+                    games.append(Games(game_id, competition_id, season, date, home_club_id, away_club_id, home_club_goals, away_club_goals, home_club_position, away_club_position,home_club_manager_name, away_club_manager_name,stadium,attendance, referee,url,home_club_name,away_club_name))
         return games
 
     def add_game(self, game_in):
@@ -369,44 +355,26 @@ class Database:
         )
         return player
     def get_players(self):
-        with dbapi2.connect(self.db_url) as connection:
+        players = []
+        with dbapi2.connect(host="localhost", user = "postgres", password = "12345678", database = "DatabaseProject") as connection:
             with connection.cursor() as cursor:
                 query = """
-                    SELECT
-                        id,
-                        first_name,
-                        last_name,
-                        name,
-                        current_club_name,
-                        current_club_id,
-                        competition_id
-                    FROM
-                        player
-                    ORDER BY id;
-                """
+                            SELECT
+                                player_id,
+                                first_name,
+                                last_name,
+                                name,
+                                current_club_name,
+                                current_club_id,
+                                competition_id
+                            FROM
+                                player
+                        """
                 cursor.execute(query)
-                if cursor.rowcount == 0:
-                    return None
-                (
-                    player_id,
-                    first_name,
-                    last_name,
-                    player_name,
-                    current_club_name,
-                    current_club_id,
-                    competition_id,
-                ) = cursor.fetchone()
-
-            player = Player(
-            player_id,
-            first_name,
-            last_name,
-            player_name,
-            current_club_name,
-            current_club_id,
-            competition_id,
-        )
-        return player
+                for player_id, first_name, last_name, name, current_club_name, current_club_id, competition_id in cursor:
+                    players.append((Player(player_id, first_name, last_name, name, current_club_name, current_club_id,
+                                           competition_id)))
+        return players
     def get_player_by_name(self, name):
         with dbapi2.connect(self.db_url) as connection:
             with connection.cursor() as cursor:
@@ -686,7 +654,7 @@ class Database:
                 """
                 cursor.execute(query, (club_id,))
 
-                
+
     #######################   PLAYER ATTRIBUTES ########################
 
     def get_player_bio(self, player_id):
@@ -830,7 +798,7 @@ class Database:
 
         return player_photos
     def get_player_attributes(self, player_id):
-        with dbapi2.connect(self.db_url) as connection:
+        with dbapi2.connect(host="localhost", user = "postgres", password = "12345678", database = "DatabaseProject") as connection:
             with connection.cursor() as cursor:
                 query = """
                     SELECT
@@ -873,6 +841,55 @@ class Database:
             contract_expiration_date
         )
         return player_attributes
+    def get_all_player_attributes(self):
+        with dbapi2.connect(host="localhost", user="postgres", password="12345678", database="DatabaseProject") as connection:
+            with connection.cursor() as cursor:
+                query = """
+                    SELECT
+                        player_id,
+                        player_code,
+                        sub_position,
+                        position,
+                        foot,
+                        height_in_cm,
+                        market_value_in_eur,
+                        highest_market_value_in_eur,
+                        contract_expiration_date
+                    FROM
+                        player_attributes;
+                """
+                cursor.execute(query)
+                player_attributes_list = []
+
+                for row in cursor.fetchall():
+                    (
+                        player_id,
+                        player_code,
+                        sub_position,
+                        position,
+                        foot,
+                        height_in_cm,
+                        market_value_in_eur,
+                        highest_market_value_in_eur,
+                        contract_expiration_date
+                    ) = row
+
+                    player_attributes = PlayerAttributes(
+                        player_id,
+                        player_code,
+                        sub_position,
+                        position,
+                        foot,
+                        height_in_cm,
+                        market_value_in_eur,
+                        highest_market_value_in_eur,
+                        contract_expiration_date
+                    )
+
+                    player_attributes_list.append(player_attributes)
+
+                return player_attributes_list
+
     def add_player_attributes(self, player_attributes_data):
         with dbapi2.connect(self.db_url) as connection:
             with connection.cursor() as cursor:
@@ -921,5 +938,3 @@ class Database:
             with connection.cursor() as cursor:
                 query = "DELETE FROM player_attributes WHERE id = %s"
                 cursor.execute(query, (player_attributes_key,))
-
-

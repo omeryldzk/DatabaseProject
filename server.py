@@ -32,10 +32,10 @@ def create_app():
     app.add_url_rule("/players_attributes_delete/<int:id>/", view_func=views.delete_attributes_page)
     #######################   PLAYER PHOTOS   ########################
     app.add_url_rule("/players_photos", view_func=views.players_photos_page)
-    app.add_url_rule("/players_photos<int:player_id", view_func=views.player_photo_page)
+    # app.add_url_rule("/players_photos<int:player_id", view_func=views.player_photo_page)
     #######################   PLAYER BIOS   ########################
     app.add_url_rule("/players_bios", view_func=views.players_bios_page)
-    app.add_url_rule("/players_bios<int:player_id>", view_func=views.player_bio_page)
+    # app.add_url_rule("/players_bios<int:player_id>", view_func=views.player_bio_page)
 
     #################### CLUBS ###############################
     app.add_url_rule("/clubs", view_func=views.clubs_page, methods=["GET", "POST"])
