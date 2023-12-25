@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}{{ player_attributes.display_fi_last }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h2 class="display-4">Player Attributes - {{ player_attributes.display_fi_last }}</h2>
+        </div>
+
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action">Player ID:  {{ player_attributes.id }}</li>
+            <!---<li class="list-group-item list-group-item-action">First &amp; Name:  {{ player_attributes.display_fi_last }}</li>--->
+            <li class="list-group-item list-group-item-action">Player Code:  {{ player_attributes.player_code }}</li>
+            <li class="list-group-item list-group-item-action">Position:  {{ player_attributes.position }}</li>
+            <li class="list-group-item list-group-item-action">Sub Position:  {{ player_attributes.sub_position }}</li>
+            <li class="list-group-item list-group-item-action">Foot:  {{ player_attributes.foot }}</li>
+            <li class="list-group-item list-group-item-action">Height:  {{ player_attributes.height }}</li>
+            <li class="list-group-item list-group-item-action">Market Value in Euro:  {{ player_attributes.market_value_in_eur }}</li>
+            <li class="list-group-item list-group-item-action">Highest Market Value in Euro:  {{ player_attributes.highest_market_value_in_eur }}</li>
+            <li class="list-group-item list-group-item-action">Contract Expiration Date:  {{ player_attributes.contract_expiration_date }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

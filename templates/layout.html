@@ -1,56 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Players - {% block title %}{% endblock %}</title>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"/>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='mymovies.css') }}"/>
-  </head>
-  <body>
-    <header>
-      <nav class="navbar" aria-label="main navigation">
-        <div class="navbar-brand">
-          <span class="navbar-item">
-            <a class="button is-link" href="{{ url_for('home_page') }}">Home</a>
-          </span>
-          <span class="navbar-item">
-            <a class="button is-link" href="{{ url_for('players_page') }}">Player List</a>
-          </span>
-          {% if current_user.is_admin %}
-          <span class="navbar-item">
-            <a class="button is-link" href="{{ url_for('player_add_page') }}">Add Player</a>
-          </span>
-          {% endif %}
-          <span class="navbar-item">
-          {% if not current_user.is_authenticated %}
-            <a class="button is-link" href="{{ url_for('login_page') }}">Log in</a>
-          {% else %}
-            {{ current_user.username }}
-            <a class="button is-link" href="{{ url_for('logout_page') }}">Log out</a>
-          {% endif %}
-        </span>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DBP - {% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <meta name="theme-color" content="#712cf9">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+</head>
+
+<body>
+
+    <header class="p-3" style="background-color: #3d195b;">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="{{ url_for('home_page') }}" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li><a href="{{ url_for('players_page') }}" class="nav-link px-2 text-white">Players</a></li>
+                    <li><a href="{{ url_for('players_attributes_page') }}" class="nav-link px-2 text-white">Player Attributes</a></li>
+                    <li><a href="{{ url_for('players_photos_page') }}" class="nav-link px-2 text-white">Player Photos</a></li>
+                    <li><a href="{{ url_for('players_bios_page') }}" class="nav-link px-2 text-white">Player Bios</a></li>
+                    <li><a href="{{ url_for('clubs_page') }}" class="nav-link px-2 text-white">Clubs</a></li>
+                    <li><a href="{{ url_for('games_page') }}" class="nav-link px-2 text-white">Games</a></li>
+                    <li>
+                        {% if not current_user.is_authenticated %}
+                        <a class="nav-link px-2 text-info" href="{{ url_for('login_page') }}">Log in</a>
+                        {% else %}
+                        <a class="nav-link px-2 text-warning" href="{{ url_for('logout_page') }}">Log out ({{ current_user.username }})</a>
+                        {% endif %}
+                    </li>
+                  </ul>
+        
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" onkeyup="search()" id="searchbar">
+                </form>
+
+            </div>
         </div>
-      </nav>
     </header>
 
+
     <main>
-      {% for message in get_flashed_messages() %}
-        <div class="notification is-info">{{ message }}</div>
-        {% endfor %}
-      <section class="section">
-        <div class="content">
-          {% block content %}{% endblock %}
+        <div class="container">
+            <div class="container-fluid mt-4">
+                {% for category, message in get_flashed_messages(with_categories=True) %}
+                <div class="d-flex justify-content-end align-items-center w-100">
+                    <div class="alert alert-{{ category }} text-center" role="alert">
+                        {{ message }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% block content %}{% endblock %}
         </div>
-      </section>
     </main>
 
-    <footer class="footer">
-      <div class="content">
-        <small>&copy; 2015-2018, Kilgore Trout</small>
-      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script>
+        var myCarousel = document.getElementById("slider1");
+
+        var carousel = new bootstrap.Carousel(myCarousel, {
+            interval: 3000,
+            wrap: true,
+            keyboard: false,
+            pause: 'hover',
+            touch: true
+        });
+
+        document.getElementById("prev").addEventListener("click", function() {
+        carousel.prev();
+        // carousel.next();
+        // carousel.pause();
+        // carousel.cycle();
+        });
+    
+    
+    </script>
+    <script src="/static/js/script.js"></script>
+    <footer>
+        <div class="container">
+            <footer class="py-3 my-4">
+              <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="{{ url_for('home_page') }}" class="nav-link px-2 text-muted">Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('clubs_page') }}" class="nav-link px-2 text-muted">Clubs</a></li>
+                <li class="nav-item"><a href="{{ url_for('players_page') }}" class="nav-link px-2 text-muted">Players</a></li>
+                <li class="nav-item"><a href="{{ url_for('players_attributes_page') }}" class="nav-link px-2 text-muted">Player Attributes</a></li>
+                <li class="nav-item"><a href="{{ url_for('players_photos_page') }}" class="nav-link px-2 text-muted">Player Photos</a></li>
+                <li class="nav-item"><a href="{{ url_for('players_bios_page') }}" class="nav-link px-2 text-muted">Player Bios</a></li>
+                <li class="nav-item"><a href="{{ url_for('games_page') }}" class="nav-link px-2 text-muted">Games</a></li>
+              </ul>
+              <p class="text-center text-muted">&copy; 2023 Database Systems Project</p>
+            </footer>
+          </div>
     </footer>
-  </body>
+</body>
+
 </html>

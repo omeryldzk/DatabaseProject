@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% block title %}Add a Game{% endblock %}
+{% block content %}
+<h1>Add a Game</h1>
+<form action="" method="post" name="game">
+    {{ form.csrf_token }}
+    <div>
+        <label for="game_id">game_id</label>
+        <div>
+            {{ form.game_id (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.game_id.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="competition_id">competition_id</label>
+        <div>
+            {{ form.competition_id (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.competition_id.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="season">season</label>
+        <div>
+            {{ form.season (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.season.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="date">date</label>
+        <div>
+            {{ form.date (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.date.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="home_club_id">home_club_id</label>
+        <div>
+            {{ form.home_club_id (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.home_club_id.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="away_club_id">away_club_id</label>
+        <div>
+            {{ form.away_club_id (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.away_club_id.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="home_club_goals">home_club_goals</label>
+        <div>
+            {{ form.home_club_goals (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.home_club_goals.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="away_club_goals">away_club_goals</label>
+        <div>
+            {{ form.away_club_goals (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.away_club_goals.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="home_club_position">home_club_position</label>
+        <div>
+            {{ form.home_club_position (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.home_club_position.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="away_club_position">away_club_position</label>
+        <div>
+            {{ form.away_club_position (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.away_club_position.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="home_club_manager_name">home_club_manager_name</label>
+        <div>
+            {{ form.home_club_manager_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.home_club_manager_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="away_club_manager_name">away_club_manager_name</label>
+        <div>
+            {{ form.away_club_manager_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.away_club_manager_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="stadium">stadium</label>
+        <div>
+            {{ form.stadium (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.stadium.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="attendance">attendance</label>
+        <div>
+            {{ form.attendance (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.attendance.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="referee">referee</label>
+        <div>
+            {{ form.referee (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.referee.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="url">url</label>
+        <div>
+            {{ form.url (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.url.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="home_club_name">home_club_name</label>
+        <div>
+            {{ form.home_club_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.home_club_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <label for="away_club_name">away_club_name</label>
+        <div>
+            {{ form.away_club_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.away_club_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div>
+        <div>
+            <button>Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

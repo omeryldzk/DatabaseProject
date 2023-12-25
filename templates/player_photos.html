@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Player Photos{% endblock %}
+{% block content %}
+    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h2 class="display-4">Player Photos</h2>
+    </div>
+
+    {% if player_photos %}
+    <div class="album py-5 bg-light">
+        <div class="container">
+    
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for player_photo in player_photos %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img
+                            class="bd-placeholder-img card-img-top" width="100%" height="280"
+                            src={{ player_photo.urlPlayerPhoto}}
+                        >
+        
+                        <div class="card-body">
+                            <a href="{{ url_for('player_page', player_id=player_photo.idPlayer)}}" class="btn btn-light">{{ player_photo.namePlayer }}</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        
+    {% endif %}
+{% endblock %}

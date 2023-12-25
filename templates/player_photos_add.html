@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Add a Player Photo{% endblock %}
+{% block content %}
+<h1>Add a Player Photo</h1>
+
+<form action="" method="post" name="player_photo">
+    {{ form.csrf_token }}
+
+    <div>
+        <label for="namePlayer">Player Name</label>
+        <div>
+            {{ form.namePlayer (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.namePlayer.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="idPlayer">Player ID</label>
+        <div>
+            {{ form.idPlayer (required=True) }}
+        </div>
+        {% for error in form.idPlayer.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="idTeam">Team ID</label>
+        <div>
+            {{ form.idTeam (required=True)  }}
+        </div>
+    </div>
+
+    <div>
+        <label for="urlPlayerPhoto">Photo URL</label>
+        <div>
+            {{ form.urlPlayerPhoto (required=True, autofocus=True, class='input')   }}
+        </div>
+        {% for error in form.urlPlayerPhoto.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+
+
+    <div>
+        <div>
+            <button>Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Edit Player Photo{% endblock %}
+{% block content %}
+<h1>Edit {{ form.namePlayer }}'s Photo</h1>
+
+<form action="" method="post" name="player_photo">
+    {{ form.csrf_token }}
+
+    <div class="row mb-3">
+        <label for="namePlayer" class="col-sm-2 col-form-label">Player Name</label>
+        <div class="col-sm-10">
+            {{ form.namePlayer (required=True, autofocus=True, class='form-control') }}
+        </div>
+        {% for error in form.namePlayer.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="idPlayer">Player ID</label>
+        <div>
+            {{ form.idPlayer }}
+        </div>
+        {% for error in form.idPlayer.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="idTeam">Team ID</label>
+        <div>
+            {{ form.idTeam  }}
+        </div>
+    </div>
+
+    <div>
+        <label for="urlPlayerPhoto">Photo URL</label>
+        <div>
+            {{ form.urlPlayerPhoto   }}
+        </div>
+        {% for error in form.urlPlayerPhoto.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+
+
+    <div>
+        <div>
+            <button>Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

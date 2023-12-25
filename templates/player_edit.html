@@ -1,40 +1,53 @@
 {% extends "layout.html" %}
-{% block title %}Edit player{% endblock %}
+{% block title %}Update Player{% endblock %}
 {% block content %}
-    <h1 class="title">Edit Player</h1>
+<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h2 class="display-4">Update Player</h2>
+</div>
 
-    <form action="" method="post" name="player_edit">
-      <div class="field">
-        <label for="name" class="name">Name</label>
-        <div class="control">
-          <input type="text" name="title" class="input" required="required"
-                 value="{{ values['name'] }}"/>
+<!-- Since the action attribute is empty , when the “Save” button is clicked, the form data will be posted to the same address as the current one.  -->
+<form action="" method="post" name="Player_edit">
+    {{ form.csrf_token }}
+
+
+    <div class="row mb-3">
+        <label for="full_name" class="col-sm-2 col-form-label">Full Name</label>
+        <div class="col-sm-10">
+            {{ form.full_name (required=True, autofocus=True, class='form-control') }}
         </div>
-        {% if 'name' in values.errors %}
-        <p class="help has-background-warning">
-            {{ values.errors['title'] }}
+        {% for error in form.full_name.errors %}
+        <p>
+            {{ error }}
         </p>
-        {% endif %}
-      </div>
+        {% endfor %}
+    </div>
 
-      <div class="field">
-        <label for="age" class="label">Age</label>
-        <div class="control">
-          <input type="number" name="year" class="input"
-                 min="{{ min_year }}" max="{{ max_year }}"
-                 value="{{ values['year'] }}"/>
+    <div class="row mb-3">
+        <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
+        <div class="col-sm-10">
+            {{ form.first_name (required=True, autofocus=True, class='form-control') }}
         </div>
-        {% if 'year' in values.errors %}
-        <p class="help has-background-warning">
-            {{ values.errors['year'] }}
+        {% for error in form.first_name.errors %}
+        <p>
+            {{ error }}
         </p>
-        {% endif %}
-      </div>
+        {% endfor %}
+    </div>
 
-      <div class="field is-grouped">
-        <div class="control">
-          <button class="button is-primary is-small">Save</button>
+    <div class="row mb-3">
+        <label for="last_name" class="col-sm-2 col-form-label">Full Name</label>
+        <div class="col-sm-10">
+            {{ form.last_name (required=True, autofocus=True, class='form-control') }}
         </div>
-      </div>
-    </form>
+        {% for error in form.last_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <button class="btn btn-outline-primary">Save</button>
+    </div>
+</form>
 {% endblock %}

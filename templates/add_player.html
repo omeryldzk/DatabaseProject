@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Add a Player{% endblock %}
+{% block content %}
+<h1>Add a Player</h1>
+
+<!-- Since the action attribute is empty , when the “Save” button is clicked, the form data will be posted to the same address as the current one.  -->
+<form action="" method="post" name="Player">
+    {{ form.csrf_token }}
+    <div>
+        <label for="full_name">Full Name</label>
+        <div>
+            {{ form.full_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.full_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="first_name">First Name</label>
+        <div>
+            {{ form.first_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.first_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label for="last_name">Last Name</label>
+        <div>
+            {{ form.last_name (required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.last_name.errors %}
+        <p>
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    
+    <div>
+        <div>
+            <button>Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

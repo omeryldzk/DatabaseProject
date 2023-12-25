@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Games{% endblock %}
+{% block content %}
+    <h1>Matches</h1>
+<form action="" method="post" name="search">
+    <div class="d-flex justify-content-end align-items-center my-3">
+        <input type="search" class="form-control form-control-dark text-bg-dark w-25" placeholder="Search..." aria-label="Search" name="search">
+    </div>
+</form>
+    <a type= "button" class= "btn btn-secondary"  href="{{ url_for('game_add_page') }}">Add a Game</a>
+    {% if games %}
+    <form action="" method="post" name="games">
+        <table class="table table-hover">
+            <tr>
+                <th>Game ID</th>
+                <th>Competition ID</th>
+                <th>Season</th>
+                <th>Date</th>
+                <th>Home Club ID</th>
+                <th>Away Club ID</th>
+                <th>Home Club Goals</th>
+                <th>Away Club Goals</th>
+                <th>Home Club Position</th>
+                <th>Away Club Position</th>
+                <th>Home Club Manager Name</th>
+                <th>Away Club Manager Name</th>
+                <th>Stadium</th>
+                <th>Attendance</th>
+                <th>Referee</th>
+                <th>Url</th>
+                <th>Home Club Name</th>
+                <th>Away Club Name</th>
+            </tr>
+            {% for game in games %}
+            <tr>
+               <td><a href="{{ url_for('game_page', gameID=game.gameID) }}" style="text-decoration:none">{{ game.gameID }}</a></td>
+                <td>{{ game.season }}</td>
+                <td>{{ game.date }}</td>
+                <td>{{ game.home_club_goals }}</td>
+                <td>{{ game.away_club_goals }}</td>
+                <td>{{ game.home_club_position }}</td>
+                <td>{{ game.away_club_position }}</td>
+                <td>{{ game.home_club_manager_name }}</td>
+                <td>{{ game.away_club_manager_name }}</td>
+                <td>{{ game.stadium }}</td>
+                <td>{{ game.attendance }}</td>
+                <td>{{ game.referee }}</td>
+                <td>{{ game.url }}</td>
+                <td>{{ game.home_club_name }}</td>
+                <td>{{ game.away_club_name }}</td>
+                <td><a href="{{ url_for('game_edit_page', gameID=game.gameID) }}" style="text-decoration:none">Edit</a></td>
+                {% if current_user.is_admin %}
+                <td><input type="checkbox" name="deletedMatch" value="{{ game.gameID }}" class="form-check-input"/></td>
+                {% endif %}
+                <!--<td><input type=hidden value="{{ gameID }}" name=deletedMatch /><button>Delete</button></td>-->
+
+            </tr>
+            {% endfor %}
+        </table>
+        {% if current_user.is_admin %}
+        <div>
+            <button class="btn btn-danger">Delete</button>
+        </div>
+        {% endif %}
+    </form>
+    {% endif %}
+{% endblock %}

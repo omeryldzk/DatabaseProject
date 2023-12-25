@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block title %}Add a Player Attribute{% endblock %}
+{% block content %}
+<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h2 class="display-4">Add a Player Attribute</h2>
+</div>
+<!-- Since the action attribute is empty , when the “Save” button is clicked, the form data will be posted to the same address as the current one.  -->
+<form action="" method="post" name="player_attributes">
+    {{ form.csrf_token }}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-4">
+                <div>
+                    <label for="player_code">Player Code</label>
+                    <div class="form-group col-md-12">
+                        {{ form.player_code (required=True, autofocus=True, class='form-control') }}
+                    </div>
+                    {% for error in form.player_code.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="position">Position</label>
+                    <div class="form-group col-md-12">
+                        {{ form.position (required=True, autofocus=True, class='form-control')  }}
+                    </div>
+                    {% for error in form.position.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="sub_position">Sub Position</label>
+                    <div class="form-group col-md-12">
+                        {{ form.sub_position (class='form-control')  }}
+                    </div>
+                    {% for error in form.sub_position.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="foot">Foot</label>
+                    <div class="form-group col-md-12">
+                        {{ form.foot (class='form-control')  }}
+                    </div>
+                    {% for error in form.foot.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="height">Height</label>
+                    <div class="form-group col-md-12">
+                        {{ form.height (class='form-control') }}
+                    </div>
+                    {% for error in form.height.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="market_value_in_eur">Market Value in Euro</label>
+                    <div class="form-group col-md-12">
+                        {{ form.market_value_in_eur (class='form-control') }}
+                    </div>
+                    {% for error in form.market_value_in_eur.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="highest_market_value_in_eur">Highest Market Value in Euro</label>
+                    <div class="form-group col-md-12">
+                        {{ form.highest_market_value_in_eur (class='form-control') }}
+                    </div>
+                    {% for error in form.highest_market_value_in_eur.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="contract_expiration_date">Contract Expiration Date</label>
+                    <div class="form-group col-md-12">
+                        {{ form.contract_expiration_date (class='form-control') }}
+                    </div>
+                    {% for error in form.contract_expiration_date.errors %}
+                    <p>
+                        {{ error }}
+                    </p>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-outline-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

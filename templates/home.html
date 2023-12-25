@@ -1,10 +1,32 @@
 {% extends "layout.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    <h1>My Players collection</h1>
-    <p>Have a nice {{ day }}!</p>
-
-    <ul>
-      <li><a href="{{ url_for('players_page') }}">List Players</a></li>
-    </ul>
+    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h2 class="display-4">DBP</h2>
+    </div>
+    <div class="carousel slide carousel-dark carousel-fade" data-bs-ride="carousel" id="slider1">
+        <ol class="carousel-indicators">
+          <li data-bs-target="#slider1" data-bs-slide-to="0" class="active"></li>
+          <li data-bs-target="#slider1" data-bs-slide-to="1"></li>
+          <li data-bs-target="#slider1" data-bs-slide-to="2"></li>
+          <li data-bs-target="#slider1" data-bs-slide-to="3"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt3332d640717de50a/64ef4b02134ae0240ab736c2/EPL_on_Sky.jpg?auto=webp&format=pjpg&width=1200&quality=60" alt="">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://a1.espncdn.com/combiner/i?img=%2Fphoto%2F2023%2F0810%2Fsoc_bundesliga-v2_16x9.jpg&w=1140&cquality=40&format=jpg" alt="">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://image.fanatik.com.tr/i/fanatik/75/0x410/64d5d4f080a032268072b8b3.jpg" alt="">
+          </div>
+        </div>
+        <a href="#slider1" class="carousel-control-prev" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a href="#slider1" class="carousel-control-next" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </a>
+      </div>
 {% endblock %}
